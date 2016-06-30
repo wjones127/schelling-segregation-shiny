@@ -1,0 +1,14 @@
+dependencies:
+- name: d3
+  version: 3.5.16
+  src: htmlwidgets
+  script: ./lib/bower_components/d3/d3.min.js
+- name: underscore
+  version: 1.8.3
+  src: htmlwidgets
+  script: ./lib/bower_components/underscore/underscore-min.js
+- name: c3
+  version: 0.4.10
+  src: htmlwidgets
+  script: ./lib/bower_components/c3/c3.min.js
+  style: ./lib/bower_components/c3/c3.min.css
