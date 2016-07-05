@@ -15,24 +15,6 @@ HTMLWidgets.widget({
                 if (current_plot !== undefined) current_plot.remove();
 
                 current_plot = schelling_plot(el, width, height, x);
-
-
-                var control_bar = d3.select(el)
-                        .append("div")
-                        .classed("control-bar", true);
-                control_bar.append("button")
-                    .text("Stop")
-                    .classed("btn btn-default", true)
-                    .on("click", current_plot.stop);
-                control_bar.append("button")
-                    .text("Start")
-                    .classed("btn btn-default", true)
-                    .on("click", current_plot.start);
-                control_bar.append("button")
-                    .text("Next")
-                    .classed("btn btn-default", true)
-                    .on("click", current_plot.next);
-
             },
 
             resize: function(width, height) {
@@ -94,12 +76,49 @@ function schelling_plot(el, init_width, init_height, full_data) {
     var current_iter = 0;
     var intervalTimer = undefined;
 
+        // Create control bar
+    var control_bar = d3.select(el)
+            .append("div")
+            .classed("control-bar", true);
+
+    function add_button(name, callback) {
+        control_bar.append("button")
+            .text(name)
+            .classed("btn btn-default", true)
+            .on("click", callback);
+    }
+
+    add_button("stop", stop);
+    add_button("start", start);
+    add_button("next", next);
+
+    control_bar.append("div")
+        .classed("progress", true)
+        .append("div")
+        .classed("progress-bar", true)
+        .attr({ "role": "progressbar",
+                "aria-valuenow": current_iter.toString(),
+                "aria-valuemin": "1",
+                "aria-valuemax": full_data.history.length.toString()
+              })
+        .style({ width: "60%"});
+
+
     render(full_data.history[current_iter]);
 
     start();
 
+    function current_progress() {
+        return (100 * ((current_iter + 1) / full_data.history.length)).toString() + "%";
+    }
+
     // Renders the plot
     function render(data, transition /* optional */) {
+        // Update progress bar
+        d3.select(".progress-bar")
+            .attr("aria-valuenow", current_iter.toString())
+            .style("width", current_progress());
+
         var binding = plot.selectAll("circle")
                 .data(data);
 
@@ -172,12 +191,10 @@ function schelling_plot(el, init_width, init_height, full_data) {
     function remove() {
         stop();
         svg.remove();
+        control_bar.remove();
     }
 
     return { render: render,
              resize: resize,
-             remove: remove,
-             stop: stop,
-             start: start,
-             next: next };
+             remove: remove };
 }
