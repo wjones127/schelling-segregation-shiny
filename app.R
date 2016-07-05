@@ -28,13 +28,13 @@ ui <- shinyUI(fluidPage(
    sidebarLayout(
       sidebarPanel(
          numericInput("n", "Number of points",
-         						 1000, min = 2, 10000, step=100),
+         						 300, min = 2, 10000, step=100),
          numericInput("k", "Num. of nearest neighbors",
          						 10, min = 1, max = 100),
          numericInput("min_k", "Minimum num. of similar neighbors for happiness",
          						 5, min = 1, max = 100),
          numericInput("num_iters", "Number of iterations",
-         						 1, min = 1, max = 20)
+         						 4, min = 1, max = 20)
       ),
       
       # Show a plot of the generated distribution

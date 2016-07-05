@@ -16,6 +16,23 @@ HTMLWidgets.widget({
 
                 current_plot = schelling_plot(el, width, height, x);
 
+
+                var control_bar = d3.select(el)
+                        .append("div")
+                        .classed("control-bar", true);
+                control_bar.append("button")
+                    .text("Stop")
+                    .classed("btn btn-default", true)
+                    .on("click", current_plot.stop);
+                control_bar.append("button")
+                    .text("Start")
+                    .classed("btn btn-default", true)
+                    .on("click", current_plot.start);
+                control_bar.append("button")
+                    .text("Next")
+                    .classed("btn btn-default", true)
+                    .on("click", current_plot.next);
+
             },
 
             resize: function(width, height) {
@@ -82,7 +99,7 @@ function schelling_plot(el, init_width, init_height, full_data) {
     start();
 
     // Renders the plot
-    function render(data) {
+    function render(data, transition /* optional */) {
         var binding = plot.selectAll("circle")
                 .data(data);
 
@@ -95,18 +112,27 @@ function schelling_plot(el, init_width, init_height, full_data) {
                 fill: _.compose(group_scale, group)
             });
 
-        binding
-            .transition()
-            .attr({
-                cx: _.compose(x_scale, x_pos),
-                cy: _.compose(y_scale, y_pos),
-            });
+        if (transition === undefined || transition === true) {
+            binding
+                .transition()
+                .attr({
+                    cx: _.compose(x_scale, x_pos),
+                    cy: _.compose(y_scale, y_pos),
+                });
+        } else {
+            binding
+                .attr({
+                    cx: _.compose(x_scale, x_pos),
+                    cy: _.compose(y_scale, y_pos),
+                });
+        }
     }
 
     // Transitions to next state
     function next() {
         current_iter = (current_iter + 1) % full_data.history.length;
-        render(full_data.history[current_iter]);
+        var back_to_start = current_iter === 0;
+        render(full_data.history[current_iter], !back_to_start);
     }
 
     function start() {
@@ -150,5 +176,8 @@ function schelling_plot(el, init_width, init_height, full_data) {
 
     return { render: render,
              resize: resize,
-             remove: remove };
+             remove: remove,
+             stop: stop,
+             start: start,
+             next: next };
 }
