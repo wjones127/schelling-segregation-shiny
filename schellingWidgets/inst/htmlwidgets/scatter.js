@@ -159,11 +159,13 @@ function schelling_plot(el, init_width, init_height, full_data) {
     }
 
     function start() {
-        intervalTimer = setInterval(next, 1000);
+        if (intervalTimer === undefined)
+            intervalTimer = setInterval(next, 1000);
     }
 
     function stop() {
         clearInterval(intervalTimer);
+        intervalTimer = undefined;
     }
 
     // Resize the plot
