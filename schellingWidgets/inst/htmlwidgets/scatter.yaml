@@ -12,3 +12,7 @@ dependencies:
   src: htmlwidgets
   script: ./lib/bower_components/c3/c3.min.js
   style: ./lib/bower_components/c3/c3.min.css
+- name: mainstyle
+  src: htmlwidgets
+  version: 1.0
+  style: ./lib/style.css

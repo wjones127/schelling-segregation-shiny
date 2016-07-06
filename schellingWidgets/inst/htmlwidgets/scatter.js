@@ -30,7 +30,7 @@ HTMLWidgets.widget({
 
 function schelling_plot(el, init_width, init_height, full_data) {
 
-    var margin = 60,
+    var margin = 30,
         plot_width = init_width - 2 * margin,
         plot_height = init_height - 2 * margin,
         svg = d3.select(el)
@@ -41,7 +41,7 @@ function schelling_plot(el, init_width, init_height, full_data) {
             }),
         plot = svg.append("g")
             .classed("plot", true)
-            .attr("transform", "translate(20, 20)");
+            .attr("transform", "translate(" + margin + "," + margin + ")");
 
     // Getter functions
     function x_pos(d) { return d.x; }
@@ -60,9 +60,13 @@ function schelling_plot(el, init_width, init_height, full_data) {
     // Axes
     var x_axis = d3.svg.axis()
             .scale(x_scale)
+            .innerTickSize(-plot_height)
+            .tickPadding(10)
             .orient("bottom"),
         y_axis = d3.svg.axis()
             .scale(y_scale)
+            .innerTickSize(-plot_width)
+            .tickPadding(10)
             .orient("left");
 
     plot.append("g")
@@ -179,13 +183,14 @@ function schelling_plot(el, init_width, init_height, full_data) {
 
         // Transition points
         plot.selectAll("circle")
-            .data()
             .transition()
             .attr({
                 cx: _.compose(x_scale, x_pos),
                 cy: _.compose(y_scale, y_pos)
             });
+
     }
+
 
     // Deletes the plot
     function remove() {
